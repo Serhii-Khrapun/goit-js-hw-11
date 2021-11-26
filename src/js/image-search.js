@@ -20,14 +20,14 @@ async function onSearch(e) {
     imagesApiService.searchQuery = e.currentTarget.elements.searchQuery.value;
 
 const good = await imagesApiService.fetchImages();
-const totalHits = good.data.totalHits;  
+const totalHits =  good.data.totalHits;  
 const hitsLength = good.data.hits.length;  
   
         if(totalHits < 1) {
             Notify.failure("Sorry, there are no images matching your search query. Please try again.");
             return;
         }
-    else if(imagesApiService.searchQuery === '') {
+    else if(imagesApiService.searchQuery.trim() === '') {
         Notify.warning('Enter your serch query, please :)');
         return;
     }
@@ -37,19 +37,21 @@ const hitsLength = good.data.hits.length;
     refs.imagesContainer.innerHTML = ''; 
     
     imagesApiService.resetPage();
-    imagesApiService.fetchImages().then(renderPosts);
+   await imagesApiService.fetchImages().then(renderPosts);
     
-    
+   
     
     
     
     refs.loadMoreBtn.classList.remove('is-hidden');
     refs.loadMoreBtn.removeAttribute('disabled');
-    
-    if (hitsLength < 40) {
-      refs.loadMoreBtn.classList.add('is-hidden');
+     if (hitsLength < 40) {
+       refs.loadMoreBtn.classList.add('is-hidden');
         Notify.info("We're sorry, but you've reached the end of search results.");
+       return;
     }
+    
+   
     }
     }
 
@@ -61,9 +63,10 @@ async function onLoadMore() {
         imagesApiService.decrementPage();
     };
     
-    imagesApiService.fetchImages().then(renderPosts);
+    await imagesApiService.fetchImages().then(renderPosts);
     const good = await imagesApiService.fetchImages(); 
-    const hitsLength = good.data.hits.length;  
+    const hitsLength = good.data.hits.length; 
+   
     if (hitsLength < 40) {
       refs.loadMoreBtn.classList.add('is-hidden');
        Notify.info("We're sorry, but you've reached the end of search results.");
@@ -80,7 +83,7 @@ async function onLoadMore() {
 
 }
 
-function renderPosts(getImg) {
+ function renderPosts(getImg) {
         const markup = 
         getImg.data.hits
     .map(({webformatURL,largeImageURL,tags,likes,views,comments,downloads}) => {
