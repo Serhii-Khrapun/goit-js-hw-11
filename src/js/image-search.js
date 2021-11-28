@@ -1,6 +1,6 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import ImagesApiService from './fetch-images';
+import ApiService from './fetch-images';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const refs = {
@@ -10,36 +10,32 @@ const refs = {
   loadMoreBtn: document.querySelector('.load-more'),
   body: document.querySelector('body'),
 };
-const imagesApiService = new ImagesApiService();
 
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 async function onSearch(e) {
   e.preventDefault();
-  imagesApiService.searchQuery = e.currentTarget.elements.searchQuery.value;
+  ApiService.searchQuery = e.currentTarget.elements.searchQuery.value;
+  const data = await ApiService.fetchImage();
 
-  const good = await imagesApiService.fetchImages();
-  const totalHits = good.data.totalHits;
-  const hitsLength = good.data.hits.length;
-
-  if (totalHits < 1) {
+  if (data.hits.length === 0) {
     Notify.failure('Sorry, there are no images matching your search query. Please try again.');
     return;
-  } else if (imagesApiService.searchQuery.trim() === '') {
+  } else if (ApiService.searchQuery.trim() === '') {
     Notify.warning('Enter your serch query, please :)');
     return;
   } else {
     refs.body.style.background = '#ffffff';
-    Notify.success(`Hooray! We found ${totalHits} images.`);
+    Notify.success(`Hooray! We found ${data.totalHits} images.`);
     refs.imagesContainer.innerHTML = '';
 
-    imagesApiService.resetPage();
-    await imagesApiService.fetchImages().then(renderPosts);
+    ApiService.resetPage();
+    renderPosts(data.hits);
 
     refs.loadMoreBtn.classList.remove('is-hidden');
     refs.loadMoreBtn.removeAttribute('disabled');
-    if (hitsLength < 40) {
+    if (data.hits.length < 40) {
       refs.loadMoreBtn.classList.add('is-hidden');
       Notify.info("We're sorry, but you've reached the end of search results.");
       return;
@@ -48,15 +44,12 @@ async function onSearch(e) {
 }
 
 async function onLoadMore() {
-  if (imagesApiService.page !== 2) {
-    imagesApiService.decrementPage();
-  }
+  ApiService.incrementPage();
+  const data = await ApiService.fetchImage();
 
-  await imagesApiService.fetchImages().then(renderPosts);
-  const good = await imagesApiService.fetchImages();
-  const hitsLength = good.data.hits.length;
+  renderPosts(data.hits);
 
-  if (hitsLength < 40) {
+  if (data.hits.length < 40) {
     refs.loadMoreBtn.classList.add('is-hidden');
     Notify.info("We're sorry, but you've reached the end of search results.");
   }
@@ -71,9 +64,10 @@ async function onLoadMore() {
   });
 }
 
-function renderPosts(getImg) {
-  const markup = getImg.data.hits
-    .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
+function renderPosts(images) {
+  const markup = images
+    .map(image => {
+      const { webformatURL, largeImageURL, tags, likes, views, comments, downloads } = image;
       return `<div class="photo-card">
         <a class="gallery__link" href="${largeImageURL}">
             <img class="gallery__image" src="${webformatURL}" alt="${tags}" loading="lazy" width="392" height="264"/>
