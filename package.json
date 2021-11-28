@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "axios": "^0.24.0",
+    "material-icons": "^1.10.3",
     "notiflix": "^3.2.2",
     "simplelightbox": "^2.10.1"
   }
