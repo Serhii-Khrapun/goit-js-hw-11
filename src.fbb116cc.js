@@ -68,7 +68,7 @@ module.exports={version:"0.24.0"};
 },{"./utils":"S1cf","./helpers/bind":"EDTP","./core/Axios":"OvAf","./core/mergeConfig":"OHvn","./defaults":"BXyq","./cancel/Cancel":"mIKj","./cancel/CancelToken":"tsWd","./cancel/isCancel":"V30M","./env/data":"xNqU","./helpers/spread":"X8jb","./helpers/isAxiosError":"wICU"}],"dZBD":[function(require,module,exports) {
 module.exports=require("./lib/axios");
 },{"./lib/axios":"nUiQ"}],"NWEP":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var e=t(require("axios"));function t(e){return e&&e.__esModule?e:{default:e}}class a{constructor(){this.searchQuery="",this.page=1}async fetchImages(){const t=await e.default.get(`https://pixabay.com/api/?key=24443838-ead6510e85d5ce0a082bd02f6&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=40`);return this.incrementPage(),t}resetPage(){this.page=1}incrementPage(){this.page+=1}decrementPage(){this.page-=1}}exports.default=a;
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var e=t(require("axios"));function t(e){return e&&e.__esModule?e:{default:e}}class a{constructor(){this.searchQuery="",this.page=1}async fetchImages(){let t=await e.default.get(`https://pixabay.com/api/?key=24443838-ead6510e85d5ce0a082bd02f6&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=40`);return this.incrementPage(),t}resetPage(){this.page=1}incrementPage(){this.page+=1}decrementPage(){this.page-=1}}exports.default=a;
 },{"axios":"dZBD"}],"MeeU":[function(require,module,exports) {
 var define;
 var global = arguments[3];
@@ -78,4 +78,4 @@ var t,o=arguments[3];!function(o,i){"function"==typeof t&&t.amd?t([],function(){
 },{"simplelightbox":"yx6k","simplelightbox/dist/simple-lightbox.min.css":"kz9M","./fetch-images":"NWEP","notiflix/build/notiflix-notify-aio":"MeeU"}],"Focm":[function(require,module,exports) {
 "use strict";require("./sass/main.scss"),require("./js/image-search.js");
 },{"./sass/main.scss":"clu1","./js/image-search.js":"yzHX"}]},{},["Focm"], null)
-//# sourceMappingURL=/goit-js-hw-11/src.c3f69276.js.map
+//# sourceMappingURL=/goit-js-hw-11/src.fbb116cc.js.map
